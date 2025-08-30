@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Прости меня 💗</title>
+  <!-- ►► ШРИФТ: замени ниже на любой шрифт из Google Fonts (и имя в CSS переменной --font) ◄◄ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font: 'Nunito', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+      --bg1: #0f1023; /* deep violet */
+      --bg2: #111827; /* slate */
+      --pink: #ff4d6d;
+      --pink-2: #ff8fab;
+      --rose: #fb7185;
+      --mint: #99f6e4;
+      --card: rgba(255,255,255,0.12);
+      --card-border: rgba(255,255,255,0.2);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, #1f2957 0%, transparent 60%),
+                  radial-gradient(1000px 600px at 100% 0%, #37122a 0%, transparent 60%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x: hidden;
+    }
+    a { color: var(--mint); text-decoration: none; }
+
+    .wrap { min-height: 100dvh; display: grid; place-items: center; padding: 32px; }
+
+    .card {
+      width: min(980px, 92vw);
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    /* Decorative floating hearts */
+    .hearts { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .heart { position: absolute; font-size: 18px; opacity: .14; animation: float 12s linear infinite; }
+    @keyframes float {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg); }
+      100% { transform: translateY(-120vh) translateX(40px) rotate(360deg); }
+    }
+
+    header { padding: 28px 28px 0; z-index: 2; position: relative; }
+    header h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 40px); letter-spacing: .3px; }
+    header p  { margin: 0; color: var(--muted); }
+
+    .content { padding: 24px 28px 32px; display: grid; gap: 22px; z-index: 1; position: relative; }
+
+    .apology-box {
+      display: grid; gap: 14px; padding: 18px; border: 1px dashed rgba(255,255,255,.25);
+      border-radius: calc(var(--radius) - 8px); background: rgba(255,255,255,0.06);
+    }
+    .apology-text { font-size: clamp(16px, 2.2vw, 18px); line-height: 1.6; }
+
+    .btns { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      padding: 12px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,0.07); color: var(--text); cursor: pointer;
+      font-weight: 700; transition: transform .06s ease, background .2s ease, box-shadow .2s ease; 
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    .btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0); }
+    .btn.primary { background: linear-gradient(135deg, var(--pink), var(--rose)); border: none; }
+    .btn.primary:hover { filter: brightness(1.05); }
+
+    .menu { margin-top: 4px; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    @media (min-width: 820px){ .menu { grid-template-columns: repeat(4, 1fr);} }
+    .tile { position: relative; background: rgba(255,255,255,.06); border-radius: 18px; padding: 16px; border: 1px solid rgba(255,255,255,.18); min-height: 120px; cursor: pointer; overflow: hidden; }
+    .tile:hover::after { opacity: .18; }
+    .tile::after { content:""; position: absolute; inset: 0; background: radial-gradient(400px 120px at 20% 10%, rgba(255,77,109,.35), transparent 60%); opacity: .12; transition: .25s ease; }
+    .tile h3 { margin: 0 0 6px; font-size: 18px; }
+    .tile p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* Screens */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .kitty {
+      display: grid; gap: 16px; text-align: center;
+    }
+    .kitty img, .kitty video { width: min(520px, 100%); height: auto; border-radius: 18px; border: 1px solid rgba(255,255,255,.2); box-shadow: var(--shadow); }
+    .kitty h2 { margin: 0; font-size: clamp(22px, 3.2vw, 28px); }
+
+    /* Gallery */
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 700px){ .grid { grid-template-columns: repeat(3, 1fr);} }
+    .ph { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,.25); background: #0b1220; aspect-ratio: 4/5; }
+    .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Vision board */
+    .vision { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .v-card { grid-column: span 3; padding: 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); min-height: 120px; position: relative; overflow: hidden; }
+    .v-card.small { grid-column: span 2; }
+    .v-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .65; }
+    .v-card h4, .v-card p { position: relative; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,.5); }
+    .v-card h4 { font-size: 18px; margin-bottom: 6px; }
+    .v-card p { color: #f1f5f9; font-size: 14px; }
+
+    /* Mini-game: pop hearts */
+    .game { position: relative; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); border-radius: 16px; min-height: 320px; overflow: hidden; }
+    .hud { display: flex; gap: 8px; align-items: center; justify-content: space-between; padding: 10px 12px; background: rgba(0,0,0,.18); border-bottom: 1px solid rgba(255,255,255,.12); }
+    .hud .stat { font-weight: 800; }
+    .arena { position: relative; height: 280px; }
+    .bubble { position: absolute; user-select: none; cursor: pointer; font-size: 28px; filter: drop-shadow(0 6px 12px rgba(0,0,0,.35)); animation: rise 4.2s linear forwards; }
+    @keyframes rise { from { transform: translateY(30px) scale(.9); opacity: 0; } 10% { opacity: 1; } to { transform: translateY(-260px) scale(1.15); opacity: 0; } }
+
+    /* Surprise / reasons */
+    .reasons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (min-width: 820px){ .reasons { grid-template-columns: repeat(3, 1fr);} }
+    .reason { padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); min-height: 84px; display: grid; place-items: center; text-align: center; font-weight: 700; }
+
+    /* Footer note */
+    .footnote { text-align: center; color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .runner{position:relative;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:16px;overflow:hidden}
+    .world{position:relative;height:260px}
+    .ground{position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg, rgba(255,255,255,.35) 0 20px, transparent 20px 40px) repeat-x;background-size:40px 5px;opacity:.7}
+    .player{position:absolute;left:36px;bottom:5px;width:36px;height:36px;border-radius:8px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.25);display:grid;place-items:center;color:#111}
+    .player::after{content:'🐰';font-size:22px} /* ← тут зайчик */
+    .obstacle{position:absolute;bottom:5px;width:26px;height:30px;border-radius:6px;background:linear-gradient(180deg,#ff8fab,#ff4d6d);box-shadow:0 6px 12px rgba(0,0,0,.25)}
+    .cloud{position:absolute;top:18px;width:80px;height:28px;border-radius:20px;background:rgba(255,255,255,.65);filter:blur(.2px);opacity:.85}
+    .hud-runner{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(0,0,0,.18);border-bottom:1px solid rgba(255,255,255,.12)}
+    .hud-runner .stat{font-weight:800}
+    .runner .controls{display:flex;gap:8px;padding:10px 12px}
+    .runner .msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35);backdrop-filter:blur(2px)}
+    .runner .msg.active{display:flex}
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .lightbox.active{display:flex}
+    .lightbox img{max-width:min(96vw,1400px);max-height:90vh;border-radius:12px;border:1px solid rgba(255,255,255,.3);box-shadow:var(--shadow)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="app">
+      <div class="hearts" aria-hidden="true" id="bgHearts"></div>
+
+      <header>
+        <h1>Я правда сожалею 💔</h1>
+        <p>Хочу всё исправить и сделать тебя счастливой. Дай шанс показать это на деле.</p>
+      </header>
+
+      <div class="content">
+        <!-- Screen: 1 — Apology + Menu -->
+        <section class="screen active" id="screen-apology">
+          <div class="apology-box">
+            <div class="apology-text" id="apologyText">
+              Прости меня, <span id="nameSpan">любимая</span>. Мне очень стыдно за то, что я лайкнул и сохранил пару тиктоков
+              с девушками. Это было неправильно и ужасно, и ты справедливо почувствовала боль,
+              ведь это похоже на микро‑измену. Я искренне раскаиваюсь и мне очень стыдно.
+
+              Я никогда не изменял тебе: ни с кем не знакомился, не переписывался и всегда говорил, что
+              мне никто не интересен кроме тебя. Я люблю только тебя.
+
+              Я хочу объясниться, выслушать тебя и доказать что яизмениться. Мне важно твоё чувство безопасности и
+              доверия. Если тебе нужно время - я рядом, если нужны действия - я сделаю. Ты 6 мой
+              приоритет.
+            </div>
+            <div class="btns">
+              <button class="btn primary" id="thinkBtn">Подумаю…</button>
+              <button class="btn" id="talkBtn" title="Аккуратно предложить разговор">Поговорим, когда ты готова</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="margin:14px 6px 6px">Меню</h3>
+            <div class="menu">
+              <div class="tile" data-open="photos">
+                <h3>Наши фотки 📸</h3>
+                <p>Воспоминания, которые хочется беречь</p>
+              </div>
+              <div class="tile" data-open="vision">
+                <h3>Карта мечты ✨</h3>
+                <p>Наши цели и мечты — вместе</p>
+              </div>
+              <div class="tile" data-open="games">
+                <h3>Мини‑игры 💘</h3>
+                <p>Щепотка веселья и улыбок</p>
+              </div>
+              <div class="tile" data-open="surprise">
+                <h3>Сюрприз 🎁</h3>
+                <p>Причины, почему ты — моё всё</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Screen: 2 — Kitty invite -->
+        <section class="screen" id="screen-kitty">
+          <div class="kitty">
+            <h2>Можно шанс? Зайчик принёс цветы и приглашение 🌸🐾</h2>
+            <div id="kittyMediaWrap">
+              <!-- Если хочешь — вставь сюда mp4/mp3/гиф. По умолчанию гиф из settings.KITTY_GIF -->
+              <img id="rabbitGif" alt="Котик с цветами приглашает на встречу"/>
+            </div>
+            <p style="color:var(--muted)">Давай увидимся и спокойно поговорим. Я очень хочу исправиться и услышать тебя полностью.</p>
+            <div class="btns" style="justify-content:center">
+              <button class="btn primary" id="meetBtn">Да, давай встретимся 💞</button>
+              <button class="btn" id="backBtn">Ещё подумаю</button>
+            </div>
+            <div class="footnote">(Можно вернуться к меню ниже и полистать воспоминания 💫)</div>
+          </div>
+        </section>
+
+        <!-- Section: Photos -->
+        <section class="screen" id="screen-photos">
+          <h2 style="margin:0 0 8px">Наши фотки 📸</h2>
+          <div class="grid" id="photosGrid"></div>
+          <div class="btns" style="margin-top:12px"><button class="btn" data-home>⟵ назад</button></div>
+        </section>
+
+        <!-- Section: Vision Board -->
+        <section class="screen" id="screen-vision">
+          <h2 style="margin:0 0 8px">Наша карта мечты ✨</h2>
+          <p class="footnote">Замени тексты и картинки в settings.visionItems — пусть тут будет то, к чему мы идём.</p>
+          <div class="vision" id="visionGrid"></div>
+          <div class="btns" style="margin-top:12px"><button class="btn" data-home>⟵ назад</button></div>
+        </section>
+
+        <!-- Section: Mini‑games -->
+        <section class="screen" id="screen-games">
+          <h2 style="margin:0 0 10px">Мини-игра «Прыг-зайчик» (как динозаврик) 🐰🏃‍♂️</h2>
+          <div class="runner" id="runner">
+            <div class="hud-runner">
+              <div class="stat">Очки: <span id="rScore">0</span></div>
+              <div class="stat">Рекорд: <span id="rBest">0</span></div>
+              <div class="btns"><button class="btn" id="rStart">Старт</button><button class="btn" id="rJump">Прыг!</button></div>
+            </div>
+            <div class="world" id="world" aria-label="Игровое поле" tabindex="0">
+              <div class="ground" id="ground"></div>
+              <div class="player" id="player" aria-label="Персонаж"></div>
+            </div>
+            <div class="msg" id="rMsg"><div class="btns"><button class="btn primary" id="rRestart">Ещё раз</button></div></div>
+          </div>
+          <div class="footnote">Управление: пробел / ↑ / W / кнопка «Прыг!». На телефоне — тап по полю.</div>
+          <div class="btns" style="margin-top:12px"><button class="btn" data-home>⟵ назад</button></div>
+        </section>
+
+        <!-- Section: Surprise / Reasons -->
+        <section class="screen" id="screen-surprise">
+          <h2 style="margin:0 0 8px">Почему ты — моё сердце ❤️</h2>
+          <div class="btns" style="margin-bottom:8px"><button class="btn" id="shuffleReasons">Перемешать</button></div>
+          <div class="reasons" id="reasonsGrid"></div>
+          <div class="btns" style="margin-top:12px"><button class="btn" data-home>⟵ назад</button></div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" hidden>
+  <img id="lightboxImg" alt="Фото в полном размере" />  
+  </div>
+  <script>
+    // === ЛЁГКИЕ НАСТРОЙКИ (замени под себя) ================================
+    const settings = {
+      girlfriendName: 'Айнеля',
+      // ГИФ котика с цветами: поставь свою ссылку (можно .gif / .mp4 с autoplay loop muted playsinline)
+      rabbitGif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp0dTg1dDB4djkzMWZsdXppNnd3cnd3ZmVxbXpoMHgzYjVwdzhsYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/lkcIQY7IuctvFCGAD3/giphy.gif',
+      // Галерея ваших фоток: вставь сюда свои URL
+      photoUrls: [
+        './img/1.jpg',
+        './img/2.jpg',
+        './img/3.jpg',
+        './img/4.jpg',
+        './img/5.jpg',
+        './img/6.jpg',
+        './img/7.jpg',
+        './img/8.jpg',
+        './img/9.jpg',
+        './img/10.jpg',
+        './img/11.jpg',
+        './img/12.jpg',
+        './img/13.jpg',
+        './img/14.jpg',
+        './img/15.jpg',
+        './img/16.jpg',
+        './img/17.jpg',
+        './img/18.jpg',
+        './img/19.jpg',
+        './img/20.jpg',
+        './img/21.jpg',
+        './img/22.jpg',
+        './img/23.jpg',
+        './img/24.jpg'
+      ],
+      // Карта мечты — картинки + подписи (можно пустые url для текстовых карточек)
+      visionItems: [
+        { title: 'Наш отпуск у моря', text: 'Тепло, закаты и мы вдвоём', url: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1200&auto=format&fit=crop', small: false },
+        { title: 'Дом мечты', text: 'Тёплая кухня и уютные комнаты', url: './img/vision/house.JPG', small: true },
+        { title: 'Цели', text: 'Поддержка, доверие, рост', url: './img/vision/bmw.avif', small: true },
+        { title: 'Магистратура', text: 'Наше будущее', url: './img/vision/oxford.jpg', small: false },
+        { title: 'Общие проекты', text: 'Учиться, строить и радоваться', url: './img/vision/money.webp', small: true },
+        { title: 'Путешествия', text: 'Новые города — новые воспоминания', url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop', small: true }
+      ],
+      // Причины любви (сюрприз‑карточки)
+      reasons: [
+        'Ты - моя семья',
+        'С тобой всё становится светлее',
+        'Твоя улыбка лечит',
+        'Жаным, мен сені сүйемін',
+        'Ты вдохновляешь меня расти',
+        'Рядом с тобой хочется быть лучшей версией себя',
+        'Ты умеешь слышать и поддерживать',
+        'Сұлу, мөлдіреген көздеріңнің қарасына баттым',
+        'Ты мой сладенький пупушоночек',
+        'Люблю твои глаза и твою доброту'
+      ]
+    };
+
+    // === ВСПОМОГАТЕЛЬНЫЕ ===================================================
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    const screens = {
+      apology: $('#screen-apology'),
+      kitty:   $('#screen-kitty'),
+      photos:  $('#screen-photos'),
+      vision:  $('#screen-vision'),
+      games:   $('#screen-games'),
+      surprise:$('#screen-surprise')
+    };
+
+    function showScreen(name){
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[name].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Фоновое «конфетти» (медленные сердечки)
+    const bg = $('#bgHearts');
+    for (let i=0; i<28; i++){
+      const s = document.createElement('div');
+      s.className = 'heart';
+      s.textContent = Math.random()>.5 ? '❤' : '💗';
+      s.style.left = Math.random()*100+'%';
+      s.style.bottom = (-10 + Math.random()*100)+'vh';
+      s.style.animationDelay = (Math.random()*12)+'s';
+      s.style.fontSize = (14 + Math.random()*22) + 'px';
+      bg.appendChild(s);
+    }
+
+    // Инициализация имени и гифки котика
+    const nameSpan = $('#nameSpan');
+    const kittyImg = $('#rabbitGif');
+    if (settings.girlfriendName) nameSpan.textContent = settings.girlfriendName;
+    if (settings.rabbitGif) {
+      kittyImg.src = settings.rabbitGif;
+    } else {
+      kittyImg.alt = 'Добавь ссылку на гиф/видео котика в settings.rabbitGif';
+    }
+
+    // Кнопки навигации
+    $('#thinkBtn').addEventListener('click', ()=> showScreen('kitty'));
+    $('#talkBtn').addEventListener('click', ()=> {
+      alert('Я рядом и готов(а) говорить тогда, когда тебе будет спокойно и удобно. ❤');
+    });
+    $('#backBtn').addEventListener('click', ()=> showScreen('apology'));
+
+    // Кнопка «Встретимся» — конфетти
+    $('#meetBtn').addEventListener('click', ()=> {
+      burstConfetti();
+      setTimeout(()=>{
+        alert('Спасибо за шанс. Я не подведу. Давай выберем место и время 💞');
+      }, 350);
+    });
+
+    // Меню: открытие секций
+    $$('.tile').forEach(t=> t.addEventListener('click', ()=> {
+      const key = t.getAttribute('data-open');
+      showScreen(key);
+    }));
+    $$('[data-home]').forEach(b=> b.addEventListener('click', ()=> showScreen('apology')));
+
+    // Галерея фоток
+    const photosGrid = $('#photosGrid');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    function openLightbox(src){ lightboxImg.src = src; lightbox.classList.add('active'); lightbox.removeAttribute('hidden'); }
+    function closeLightbox(){ lightbox.classList.remove('active'); lightboxImg.src = ''; lightbox.setAttribute('hidden',''); }
+    lightbox.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+    function renderPhotos(){
+      photosGrid.innerHTML = '';
+      settings.photoUrls.forEach(url => {
+        const item = document.createElement('div');
+        item.className = 'ph';
+        const img = new Image();
+        img.src = url;
+        img.alt = 'Наше фото';
+        item.appendChild(img);
+        photosGrid.appendChild(item);
+        item.addEventListener('click', () => openLightbox(url));
+      });
+      if (!settings.photoUrls.length){
+        photosGrid.innerHTML = '<div class="footnote">Добавь ссылки на фото в settings.photoUrls</div>';
+      }
+    }
+
+    // Vision board
+    const visionGrid = $('#visionGrid');
+    function renderVision(){
+      visionGrid.innerHTML = '';
+      settings.visionItems.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'v-card'+(v.small? ' small' : '');
+        if (v.url) {
+          const img = new Image(); img.src = v.url; img.alt = v.title || '';
+          card.appendChild(img);
+        }
+        const h4 = document.createElement('h4'); h4.textContent = v.title || '';
+        const p  = document.createElement('p');  p.textContent  = v.text  || '';
+        card.append(h4,p);
+        visionGrid.appendChild(card);
+      });
+      if (!settings.visionItems.length){
+        visionGrid.innerHTML = '<div class="footnote">Заполни settings.visionItems</div>';
+      }
+    }
+
+    // Reasons grid
+    const reasonsGrid = $('#reasonsGrid');
+    function renderReasons(list){
+      reasonsGrid.innerHTML = '';
+      list.forEach(txt => {
+        const r = document.createElement('div');
+        r.className = 'reason';
+        r.textContent = txt;
+        reasonsGrid.appendChild(r);
+      });
+    }
+    $('#shuffleReasons').addEventListener('click', ()=>{
+      const shuffled = [...settings.reasons].sort(()=> Math.random() - .5);
+      renderReasons(shuffled);
+    });
+
+    // === Mini‑game: pop hearts ============================================
+    // === Runner game (эндоc раннер с зайчиком) ===============================
+    const rWorld   = document.getElementById('world');
+    const rPlayer  = document.getElementById('player');
+    const rStart   = document.getElementById('rStart');
+    const rJumpBtn = document.getElementById('rJump');
+    const rRestart = document.getElementById('rRestart');
+    const rMsg     = document.getElementById('rMsg');
+    const rScoreEl = document.getElementById('rScore');
+    const rBestEl  = document.getElementById('rBest');
+
+    let rY = 5;           // текущая высота над землёй (px)
+    let rVY = 0;          // вертикальная скорость
+    const GRAVITY = 0.9;  // + вниз
+    const JUMP_V  = -15;  // старт прыжка вверх
+    const GROUND_Y = 5;
+
+    let running = false, lastTs = 0, speed = 6; // px/frame
+    let obstacles = [];
+    let clouds = [];
+    let score = 0;
+    let best = Number(localStorage.getItem('apol_best') || 0);
+    rBestEl.textContent = best;
+
+    function resetRunner(){
+      rY = GROUND_Y; rVY = 0; speed = 6; score = 0; rScoreEl.textContent = '0';
+      obstacles.forEach(o=>o.remove()); obstacles=[];
+      clouds.forEach(c=>c.remove()); clouds=[];
+      rPlayer.style.transform = `translateY(0px)`;
+      rMsg.classList.remove('active');
+    }
+
+  function jump(){
+    if (!running) return;
+    if (rY <= GROUND_Y + 1) { rVY = JUMP_V; } // прыжок только с земли
+  }
+
+  function spawnObstacle(){
+    const o = document.createElement('div');
+    o.className = 'obstacle';
+    const h = 18 + Math.floor(Math.random()*24);
+    o.style.height = h+'px';
+    o.style.right = '-40px';
+    // кастомный вид препятствий (морковка)
+    o.style.background = 'linear-gradient(180deg,#ffa94d,#ff6b6b)';
+    o.style.borderRadius = '8px 8px 4px 4px';
+    rWorld.appendChild(o);
+    obstacles.push(o);
+  }
+
+  function spawnCloud(){
+    const c = document.createElement('div');
+    c.className='cloud';
+    c.style.top = (10+Math.random()*80)+'px';
+    c.style.left='100%';
+    c.style.width=(60+Math.random()*70)+'px';
+    rWorld.appendChild(c);
+    clouds.push(c);
+  }
+
+  let obsTimer=0, cloudTimer=0;
+  function frame(ts){
+    if(!running) return;
+    if(!lastTs) lastTs = ts;
+    const dt = Math.min(32, ts - lastTs); // ms, кап чтобы на фризах не улетал
+    lastTs = ts;
+
+    // физика прыжка
+    rVY += GRAVITY * (dt/16);
+    rY  += rVY * (dt/16);
+    if (rY >= GROUND_Y){
+      rY = GROUND_Y;
+      rVY = 0;
+    }
+    rPlayer.style.transform = `translateY(${rY - GROUND_Y}px)`; // +вниз
+
+    // спавн и движение
+    obsTimer  += dt; cloudTimer += dt;
+    if (obsTimer > 900 - Math.min(600, score*2)) { spawnObstacle(); obsTimer = 0; }
+    if (cloudTimer > 1400){ spawnCloud(); cloudTimer = 0; }
+
+    // движение препятствий + коллизии
+    obstacles = obstacles.filter(o=>{
+      const x = (o._x ?? rWorld.clientWidth) - speed*(dt/16);
+      o._x = x;
+      o.style.transform = `translateX(${x}px)`;
+      if (x < - (rWorld.clientWidth + 60)) { o.remove(); return false; }
+      // коллизия
+      const p = rPlayer.getBoundingClientRect();
+      const q = o.getBoundingClientRect();
+      const hit = !(p.right < q.left || p.left > q.right || p.bottom < q.top || p.top > q.bottom);
+      if (hit){ gameOver(); return false; }
+      return true;
+    });
+
+    // движение облаков
+    clouds = clouds.filter(c=>{
+      const left = (c._left ?? rWorld.clientWidth) - (speed*0.35)*(dt/16);
+      c._left = left;
+      c.style.transform = `translateX(${left}px)`;
+      if (left < -200){ c.remove(); return false; }
+      return true;
+    });
+
+    // очки и сложность
+    score += 0.05 * (dt/16);
+    rScoreEl.textContent = Math.floor(score);
+    speed = Math.min(14, 6 + score/60);
+
+    requestAnimationFrame(frame);
+  }
+
+  function gameOver(){
+    running=false;
+    rMsg.classList.add('active');
+    best = Math.max(best, Math.floor(score));
+    localStorage.setItem('apol_best', best);
+    rBestEl.textContent = best;
+  }
+
+  function startRunner(){
+    resetRunner();
+    running = true;
+    lastTs = 0;
+    rWorld.focus();
+    requestAnimationFrame(frame);
+  }
+
+  // управление
+  rStart.addEventListener('click', startRunner);
+  rRestart.addEventListener('click', startRunner);
+  rJumpBtn.addEventListener('click', jump);
+  rWorld.addEventListener('pointerdown', jump);
+  document.addEventListener('keydown', (e)=>{
+    if (e.code==='Space' || e.code==='ArrowUp' || e.code==='KeyW') jump();
+  });
+
+
+    // === Конфетти (при согласии на встречу) ===============================
+    function burstConfetti(){
+      for (let i=0;i<42;i++) setTimeout(()=> piece(), i*12);
+      function piece(){
+        const s = document.createElement('div');
+        s.className = 'heart'; s.style.opacity = .9; s.textContent = ['❤','💗','💖','💘'][Math.floor(Math.random()*4)];
+        s.style.left = (40 + Math.random()*20)+'%';
+        s.style.bottom = '20%';
+        s.style.fontSize = (18 + Math.random()*22)+'px';
+        s.style.animation = 'none';
+        s.style.transition = 'transform 800ms cubic-bezier(.2,.8,.2,1), opacity 900ms';
+        document.body.appendChild(s);
+        const dx = (Math.random()-.5)*600; const dy = - (200 + Math.random()*400);
+        requestAnimationFrame(()=>{
+          s.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random()*540-270}deg)`;
+          s.style.opacity = 0;
+        });
+        setTimeout(()=> s.remove(), 1000);
+      }
+    }
+    function miniBurst(x,y){
+      for (let i=0;i<6;i++){
+        const s = document.createElement('span'); s.textContent = '❤';
+        s.style.position='absolute'; s.style.left = (x+10)+'px'; s.style.top = (y+10)+'px';
+        s.style.pointerEvents='none'; s.style.filter='drop-shadow(0 4px 8px rgba(0,0,0,.3))';
+        arena.appendChild(s);
+        const dx = (Math.random()-.5)*80; const dy = (Math.random()-.8)*80;
+        s.animate([{transform:'translate(0,0)', opacity:1}, {transform:`translate(${dx}px, ${dy}px)`, opacity:0}], {duration: 520, easing:'ease-out'});
+        setTimeout(()=> s.remove(), 520);
+      }
+    }
+
+    // Первичный рендер
+    renderPhotos();
+    renderVision();
+    renderReasons(settings.reasons);
+  </script>
+</div>
+</body>
+</html>
